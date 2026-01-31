@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrimarg | Stay Fit... Live Healthy</title>
+    <style>
+        :root {
+            --primary: #2e7d32; /* Nutrition Green */
+            --dark: #1b3022;
+            --light: #f8faf8;
+            --accent: #8bc34a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--light);
+        }
+
+        header {
+            background: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+
+        .hero {
+            padding: 4rem 1rem;
+            text-align: center;
+            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), 
+                        url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+        }
+
+        .hero h1 { font-size: 2.8rem; color: var(--dark); margin-bottom: 1rem; }
+        .hero p { max-width: 700px; margin: 0 auto 2rem; font-size: 1.2rem; }
+
+        .section { padding: 4rem 10%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+
+        .founder-img {
+            width: 100px;
+            height: 100px;
+            background: #ddd;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-top: 4rem;
+        }
+
+        .coming-soon {
+            border: 2px dashed var(--accent);
+            padding: 1rem;
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">NUTRIMARG<span style="color:var(--accent)">.fit</span></div>
+    </header>
+
+    <section class="hero">
+        <h1>Your Science-Backed Nutrition Path</h1>
+        <p>Nutrimarg is a dedicated platform designed to simplify complex nutrition science into actionable daily habits. We focus on longevity, performance, and sustainable health.</p>
+        <div class="tag">Launching Phase: 2026</div>
+    </section>
+
+    <section class="section">
+        <h2 style="text-align:center; color: var(--primary);">Who We Are</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Our Vision</h3>
+                <p>To empower individuals with data-driven nutritional insights that replace fad diets with long-term lifestyle changes.</p>
+            </div>
+            <div class="card">
+                <h3>The Method</h3>
+                <p>Combining clinical expertise with a user-centric digital experience to track, analyze, and optimize your health markers.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: #edf2ed;">
+        <h2 style="text-align:center; color: var(--primary);">The Founders</h2>
+        <div class="grid">
+            <div class="card" style="text-align:center;">
+                <div class="founder-img" style="margin: 0 auto 1rem;"></div>
+                <h3>Vasanth Doddi</h3>
+                <p>Nutrition Specialist & Visionary. Focused on transforming how we perceive food as fuel.</p>
+            </div>
+            <div class="card" style="text-align:center;">
+                <div class="founder-img" style="margin: 0 auto 1rem;"></div>
+                <h3>Sudha Doddi</h3>
+                <p>Tech & Health Strategy. Dedicated to building the digital tools for personalized nutrition.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="text-align:center;">
+        <h2>The Roadmap</h2>
+        <p>Our upcoming application will feature a secure portal for:</p>
+        <p><strong>Customers:</strong> Data logging, report viewing, and goal tracking.<br>
+        <strong>Nutritionists:</strong> Real-time dashboard to monitor client progress and adjust plans.</p>
+        <div class="coming-soon">APPLICATION UNDER DEVELOPMENT</div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Nutrimarg | All Rights Reserved</p>
+        <p style="font-size: 0.8rem; opacity: 0.7;">Empowering health through precision nutrition.</p>
+    </footer>
+
+</body>
+</html>
