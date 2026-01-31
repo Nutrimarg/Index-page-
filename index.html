@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nutrimarg</title>
+    <title>Nutrimarg | Stay Fit Live Healthy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #2e7d32; /* Nutrition Green */
+            --primary: #2e7d32;
             --dark: #1b3022;
             --light: #f8faf8;
             --accent: #8bc34a;
+            --white: #ffffff;
         }
 
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
             line-height: 1.6;
@@ -21,132 +25,226 @@
             background-color: var(--light);
         }
 
-        header {
-            background: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            border-bottom: 3px solid var(--primary);
+        /* Sticky Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            letter-spacing: -1px;
-        }
+        .nav-logo { font-weight: bold; color: var(--primary); font-size: 1.5rem; text-decoration: none; }
+        .nav-links a { text-decoration: none; color: var(--dark); margin-left: 20px; font-weight: 500; }
+        .nav-links a:hover { color: var(--primary); }
 
         .hero {
-            padding: 4rem 1rem;
+            padding: 6rem 1rem;
             text-align: center;
-            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), 
+            background: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), 
                         url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=1000');
             background-size: cover;
+            background-position: center;
         }
 
-        .hero h1 { font-size: 2.8rem; color: var(--dark); margin-bottom: 1rem; }
-        .hero p { max-width: 700px; margin: 0 auto 2rem; font-size: 1.2rem; }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--dark); margin-bottom: 1.5rem; }
+        .hero p { max-width: 800px; margin: 0 auto 2.5rem; font-size: 1.25rem; color: #444; }
 
-        .section { padding: 4rem 10%; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-
-        .card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-        .card:hover { transform: translateY(-5px); }
-
-        .founder-img {
-            width: 100px;
-            height: 100px;
-            background: #ddd;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-        }
-
-        .tag {
+        .btn-main {
             background: var(--primary);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 1rem;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 50px;
             font-weight: bold;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .btn-main:hover { background: var(--dark); transform: scale(1.05); }
+
+        .section { padding: 5rem 10%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; }
+
+        .card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-color: var(--accent); }
+
+        .founder-img {
+            width: 120px;
+            height: 120px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+        }
+        /* Styling for the new Login Button */
+        .btn-login {
+            background: transparent;
+            border: 2px solid var(--primary) !important;
+            color: var(--primary) !important;
+            padding: 8px 20px;
+            border-radius: 50px;
+            transition: 0.3s;
+            margin-left: 15px;
+        }
+
+.btn-login:hover {
+    background: var(--primary);
+    color: white !important;
+}
+
+@media (max-width: 600px) {
+    .nav-links a { margin-left: 10px; font-size: 0.9rem; }
+}
+        /* Contact Banner */
+        .contact-banner {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 10%;
+            text-align: center;
+            border-radius: 20px;
+            margin: 4rem 10%;
+        }
+        .contact-banner h2 { color: var(--accent); font-size: 2rem; }
+        .contact-email { 
+            font-size: 1.5rem; 
+            color: white; 
+            text-decoration: none; 
+            display: block; 
+            margin-top: 1rem;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
         }
 
         footer {
-            background: var(--dark);
-            color: white;
+            background: #111;
+            color: #aaa;
             text-align: center;
             padding: 3rem 1rem;
-            margin-top: 4rem;
         }
 
-        .coming-soon {
-            border: 2px dashed var(--accent);
-            padding: 1rem;
-            display: inline-block;
-            margin-top: 2rem;
+        .tag {
+            background: #e8f5e9;
             color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: bold;
+            margin-bottom: 1rem;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">NUTRIMARG<span style="color:var(--accent)"></span></div>
-    </header>
-
+   <!-- <nav>
+        <a href="#" class="nav-logo">NUTRIMARG</a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#founders">Founders</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>-->
+    <nav>
+        <a href="#" class="nav-logo">NUTRIMARG</a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#founders">Founders</a>
+            <a href="#contact">Contact</a>
+            <a href="javascript:void(0)" onclick="alert('Our secure client portal is launching in 2026. Please complete the Intake Assessment for early access!')" class="btn-login">Login</a>
+         </div>
+    </nav>
     <section class="hero">
         <h1>Your Science-Backed Nutrition Path</h1>
-        <p>Nutrimarg is a dedicated platform designed to simplify complex nutrition science into actionable daily habits. We focus on longevity, performance, and sustainable health.</p>
-        <div class="tag">Launching Phase: 2026</div>
+        <p>Simplifying complex nutrition science into actionable daily habits for longevity, performance, and sustainable health.</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSekCGsgl7tlP5I7qIVXjdHJVVLVxSCumbCyVknDF_4chQHnHA/viewform?usp=publish-editor" class="btn-main">Begin Your Assessment</a>
     </section>
 
-    <section class="section">
-        <h2 style="text-align:center; color: var(--primary);">Who We Are</h2>
+    <section id="about" class="section">
+        <h2 style="text-align:center; color: var(--primary); margin-bottom: 3rem;">Our Vision & Method</h2>
         <div class="grid">
             <div class="card">
-                <h3>Our Vision</h3>
+                <h3>The Vision</h3>
                 <p>To empower individuals with data-driven nutritional insights that replace fad diets with long-term lifestyle changes.</p>
             </div>
             <div class="card">
                 <h3>The Method</h3>
-                <p>Combining clinical expertise with a user-centric digital experience to track, analyze, and optimize your health markers.</p>
+                <p>Combining clinical expertise with a user-centric digital experience to track and optimize your unique health markers.</p>
             </div>
         </div>
     </section>
 
-    <section class="section" style="background: #edf2ed;">
-        <h2 style="text-align:center; color: var(--primary);">The Founders</h2>
+    <section id="founders" class="section" style="background: #f0f4f0;">
+        <h2 style="text-align:center; color: var(--primary); margin-bottom: 3rem;">Meet the Founders</h2>
         <div class="grid">
             <div class="card" style="text-align:center;">
-                <div class="founder-img" style="margin: 0 auto 1rem;"></div>
+                <div class="founder-img">VD</div>
                 <h3>V D</h3>
-                <p>Nutrition Specialist & Visionary. Focused on transforming how we perceive food as fuel.</p>
+                <p><strong>Nutrition Specialist</strong></p>
+                <p>Focused on transforming how we perceive food as fuel through clinical precision.</p>
             </div>
             <div class="card" style="text-align:center;">
-                <div class="founder-img" style="margin: 0 auto 1rem;"></div>
+                <div class="founder-img">GD</div>
                 <h3>G D</h3>
-                <p>Tech & Health Strategy. Dedicated to building the digital tools for personalized nutrition.</p>
+                <p><strong>Tech & Strategy</strong></p>
+                <p>Building the digital infrastructure for personalized, real-time health data monitoring.</p>
             </div>
         </div>
     </section>
 
-    <section class="section" style="text-align:center;">
-        <h2>The Roadmap</h2>
-        <p>Our upcoming application will feature a secure portal for:</p>
-        <p><strong>Customers:</strong> Data logging, report viewing, and goal tracking.<br>
-        <strong>Nutritionists:</strong> Real-time dashboard to monitor client progress and adjust plans.</p>
-        <div class="coming-soon">APPLICATION UNDER DEVELOPMENT</div>
+    <section id="contact" class="contact-banner">
+    <h2>Have Questions?</h2>
+    <p>We are currently accepting a limited number of early-access clients.</p>
+    
+    <div class="contact-links-container" style="display: flex; justify-content: center; gap: 40px; margin-top: 30px; flex-wrap: wrap;">
+        
+        <a href="mailto:nutrimarg.fit@gmail.com" target="_blank" style="text-decoration: none; color: white; transition: 0.3s;">
+            <i class="fas fa-envelope" style="font-size: 3rem; color: var(--accent); display: block; margin-bottom: 10px;"></i>
+            <span style="font-weight: bold; display: block;">nutrimarg.fit@gmail.com</span>
+        </a>
+
+        <a href="https://www.instagram.com/nutrimarg.fit/" target="_blank" style="text-decoration: none; color: white; transition: 0.3s;">
+            <i class="fab fa-instagram" style="font-size: 3rem; color: var(--accent); display: block; margin-bottom: 10px;"></i>
+            <span style="font-weight: bold; display: block;">@Nutrimarg.fit</span>
+        </a>
+
+    </div>
     </section>
+    <!--<section id="contact" class="contact-banner">
+        <h2>Have Questions?</h2>
+        <p>We are currently accepting a limited number of early-access clients.</p>
+        
+        <div style="margin-bottom: 2rem;">
+            <a href="mailto:nutrimarg.fit@gmail.com" class="contact-email">nutrimarg.fit@gmail.com</a>
+        </div>
+
+        <div style="margin-top: 1rem;">
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Join our community on Instagram</p>
+            <a href="https://www.instagram.com/Nutrimarg.fit" target="_blank" class="contact-link" style="font-weight: bold; color: var(--accent);">
+                @Nutrimarg.fit
+            </a>
+        </div>
+    </section>-->
 
     <footer>
-        <p>&copy; 2026 Nutrimarg.fit | All Rights Reserved</p>
-        <p style="font-size: 0.8rem; opacity: 0.7;">Empowering health through precision nutrition.</p>
+        <p>&copy; 2026 Nutrimarg | All Rights Reserved</p>
+        <p style="font-size: 0.8rem;">Empowering health through precisied nutrition science.</p>
     </footer>
 
 </body>
