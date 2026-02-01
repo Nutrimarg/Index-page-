@@ -11,10 +11,18 @@
             --accent: #8bc34a; --dark: #0d1a10; --card-bg: rgba(10, 20, 15, 0.95);
         }
 
+        /* Page Entrance Animation */
         body {
             margin: 0; font-family: 'Segoe UI', sans-serif;
             background: var(--dark); color: white; height: 100vh; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
+            opacity: 0;
+            animation: pageEntry 0.8s forwards;
+        }
+
+        @keyframes pageEntry {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         /* --- BACKGROUND RINGS --- */
@@ -49,40 +57,47 @@
             padding: 35px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
             width: 90%; max-width: 420px; text-align: center; display: none; z-index: 10;
         }
-        .active { display: block; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Card Entrance specifically for Step 1 */
+        #step1.active { 
+            display: block; 
+            animation: cardEntrance 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .active { display: block; }
 
-        /* --- THEMED DATE PICKER --- */
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(60px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- THEMED CONTROLS --- */
         input[type="date"] {
             appearance: none; -webkit-appearance: none;
             background: rgba(255,255,255,0.08); border: 2px solid rgba(139, 195, 74, 0.3);
             color: white; padding: 15px; border-radius: 12px; width: 100%;
-            font-size: 1rem; outline: none; margin: 15px 0; color-scheme: dark; /* Forces internal picker to dark */
+            font-size: 1rem; outline: none; margin: 15px 0; color-scheme: dark;
         }
         input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1) sepia(1) saturate(5) hue-rotate(45deg); /* Turns it Green */
-            cursor: pointer; font-size: 1.2rem;
+            filter: invert(1) sepia(1) saturate(5) hue-rotate(45deg); cursor: pointer;
         }
 
-        /* --- THEMED DROPDOWNS --- */
         .input-box {
             width: 100%; padding: 15px; margin: 12px 0; border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.1); background: #1a2a1d; /* Solid dark background */
+            border: 2px solid rgba(255,255,255,0.1); background: #1a2a1d;
             color: white; font-size: 1rem; outline: none; cursor: pointer;
             appearance: none; -webkit-appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238bc34a'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
             background-repeat: no-repeat; background-position: right 15px center; background-size: 20px;
         }
         
-        /* This fixes the white background in the dropdown list */
-        select option { background-color: #1a2a1d; color: white; padding: 10px; }
+        select option { background-color: #1a2a1d; color: white; }
 
         .sel-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .sel-item { 
             padding: 15px 5px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;
         }
-        .sel-item.selected { background: var(--accent); color: var(--dark); font-weight: bold; border-color: white; box-shadow: 0 0 15px var(--accent); }
+        .sel-item.selected { background: var(--accent); color: var(--dark); font-weight: bold; box-shadow: 0 0 15px var(--accent); }
 
         .btn-next {
             background: var(--accent); color: var(--dark); border: none; padding: 18px;
@@ -94,10 +109,13 @@
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: #0d1a10; border: 2px solid var(--accent); padding: 40px;
             border-radius: 30px; z-index: 100; text-align: center; display: none;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
     </style>
 </head>
 <body>
+
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {}"></iframe>
 
     <div class="matrix-load" id="matrixScan"></div>
 
@@ -107,67 +125,74 @@
         <div class="ring r3" id="ring3"></div>
     </div>
 
-    <div class="survey-card active" id="step1">
-        <h2 style="color: var(--r1-color); margin-bottom: 5px;">Bio-Identity</h2>
-        <p style="font-size: 0.8rem; opacity: 0.6; margin-bottom: 20px;">Establishing basic biomarkers</p>
-        <div class="sel-grid">
-            <div class="sel-item" onclick="pick('gender','Male',this)">Male</div>
-            <div class="sel-item" onclick="pick('gender','Female',this)">Female</div>
-            <div class="sel-item" onclick="pick('gender','Other',this)">Other</div>
+    <form id="assessmentForm" 
+          action="https://docs.google.com/forms/d/e/1FAIpQLSekCGsgl7tlP5I7qIVXjdHJVVLVxSCumbCyVknDF_4chQHnHA/formResponse" 
+          method="POST" 
+          target="hidden_iframe" 
+          onsubmit="submitted=true;">
+
+        <div class="survey-card active" id="step1">
+            <h2 style="color: var(--r1-color); margin-bottom: 5px;">Bio-Identity</h2>
+            <p style="font-size: 0.8rem; opacity: 0.6; margin-bottom: 20px;">Establishing basic biomarkers</p>
+            <div class="sel-grid">
+                <div class="sel-item" onclick="pick('gender','Male',this)">Male</div>
+                <div class="sel-item" onclick="pick('gender','Female',this)">Female</div>
+                <div class="sel-item" onclick="pick('gender','Other',this)">Other</div>
+            </div>
+            <input type="date" id="dob" name="entry.1286595765">
+            <button type="button" class="btn-next" onclick="toStep(2, 1)">Initialize Scan</button>
         </div>
-        <input type="date" id="dob">
-        <button class="btn-next" onclick="toStep(2, 1)">Initialize Scan</button>
-    </div>
 
-    <div class="survey-card" id="step2">
-        <h2 style="color: var(--r2-color);">Metabolic Goal</h2>
-        <select id="goal" class="input-box">
-            <option value="" disabled selected>Primary Goal</option>
-            <option value="Weight Loss">Weight Loss & Fat Burning</option>
-            <option value="Muscle Gain">Muscle Building & Strength</option>
-            <option value="Clinical">PCOS / Diabetes Management</option>
-            <option value="Maintenance">Healthy Maintenance</option>
-        </select>
-        <select id="activity" class="input-box">
-            <option value="" disabled selected>Activity Level</option>
-            <option value="Sedentary">Sedentary (No Exercise)</option>
-            <option value="Moderate">Moderate (3-5 days/week)</option>
-            <option value="Athlete">Extra Active (Professional)</option>
-        </select>
-        <button class="btn-next" onclick="toStep(3, 2)">Sync Lifestyle</button>
-    </div>
-
-    <div class="survey-card" id="step3">
-        <h2 style="color: var(--r3-color);">Body Metrics</h2>
-        <input type="number" id="h" class="input-box" placeholder="Height (cm)">
-        <input type="number" id="w" class="input-box" placeholder="Current Weight (kg)">
-        <input type="number" id="tw" class="input-box" placeholder="Target Weight (kg)">
-        <button class="btn-next" onclick="toStep(4, 3)">Lock Biometrics</button>
-    </div>
-
-    <div class="survey-card" id="step4">
-        <h2>Clinical Habits</h2>
-        <div class="sel-grid">
-            <div class="sel-item" onclick="pick('diet','Veg',this)">Veg</div>
-            <div class="sel-item" onclick="pick('diet','Non-Veg',this)">Non-Veg</div>
-            <div class="sel-item" onclick="pick('diet', 'Egg', this)">Egg</div>
+        <div class="survey-card" id="step2">
+            <h2 style="color: var(--r2-color);">Metabolic Goal</h2>
+            <select id="goal" name="entry.1226954780" class="input-box">
+                <option value="" disabled selected>Primary Goal</option>
+                <option value="Weight Loss">Weight Loss & Fat Burning</option>
+                <option value="Muscle Gain">Muscle Building & Strength</option>
+                <option value="Clinical">PCOS / Diabetes Management</option>
+                <option value="Maintenance">Healthy Maintenance</option>
+            </select>
+            <select id="activity" name="entry.1690724005" class="input-box">
+                <option value="" disabled selected>Activity Level</option>
+                <option value="Sedentary">Sedentary (No Exercise)</option>
+                <option value="Moderate">Moderate (3-5 days/week)</option>
+                <option value="Athlete">Extra Active (Professional)</option>
+            </select>
+            <button type="button" class="btn-next" onclick="toStep(3, 2)">Sync Lifestyle</button>
         </div>
-        <select id="health" class="input-box">
-            <option value="None">No Medical Issues</option>
-            <option value="PCOS">PCOS / PCOD</option>
-            <option value="Diabetes">Diabetes (Type 1/2)</option>
-            <option value="Thyroid">Thyroid Issues</option>
-            <option value="Hypertension">Hypertension (BP)</option>
-        </select>
-        <button class="btn-next" onclick="toStep(5, 0)">Analyze Habits</button>
-    </div>
 
-    <div class="survey-card" id="step5">
-        <h2 style="color:var(--accent)">Finalize Scan</h2>
-        <input type="text" id="name" class="input-box" placeholder="Full Name">
-        <input type="email" id="email" class="input-box" placeholder="Email Address">
-        <button class="btn-next" id="finalBtn" onclick="triggerMatrix()">Generate My Plan</button>
-    </div>
+        <div class="survey-card" id="step3">
+            <h2 style="color: var(--r3-color);">Body Metrics</h2>
+            <input type="number" id="h" name="entry.1093305608" class="input-box" placeholder="Height (cm)">
+            <input type="number" id="w" name="entry.674065485" class="input-box" placeholder="Current Weight (kg)">
+            <input type="number" id="tw" name="entry.795683662" class="input-box" placeholder="Target Weight (kg)">
+            <button type="button" class="btn-next" onclick="toStep(4, 3)">Lock Biometrics</button>
+        </div>
+
+        <div class="survey-card" id="step4">
+            <h2>Clinical Habits</h2>
+            <div class="sel-grid">
+                <div class="sel-item" onclick="pick('diet','Veg',this)">Veg</div>
+                <div class="sel-item" onclick="pick('diet','Non-Veg',this)">Non-Veg</div>
+                <div class="sel-item" onclick="pick('diet', 'Egg', this)">Egg</div>
+            </div>
+            <select id="health" name="entry.347206269" class="input-box">
+                <option value="None">No Medical Issues</option>
+                <option value="PCOS">PCOS / PCOD</option>
+                <option value="Diabetes">Diabetes (Type 1/2)</option>
+                <option value="Thyroid">Thyroid Issues</option>
+                <option value="Hypertension">Hypertension (BP)</option>
+            </select>
+            <button type="button" class="btn-next" onclick="toStep(5, 0)">Analyze Habits</button>
+        </div>
+
+        <div class="survey-card" id="step5">
+            <h2 style="color:var(--accent)">Finalize Scan</h2>
+            <input type="text" id="name" name="entry.576003086" class="input-box" placeholder="Full Name">
+            <input type="email" id="email" name="entry.1288588133" class="input-box" placeholder="Email Address">
+            <button type="button" id="finalBtn" class="btn-next" onclick="triggerMatrix()">Generate My Plan</button>
+        </div>
+    </form>
 
     <div id="consultPopup">
         <i class="fas fa-atom fa-spin" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
@@ -186,6 +211,7 @@
     </div>
 
     <script>
+        let submitted = false;
         let data = { gender: '', diet: '' };
 
         function pick(key, val, el) {
@@ -200,35 +226,35 @@
             document.getElementById('step' + next).classList.add('active');
         }
 
-        async function triggerMatrix() {
+        function triggerMatrix() {
+            // 1. Visual Matrix Effect
             document.getElementById('matrixScan').classList.add('matrix-active');
             document.querySelectorAll('.ring').forEach(r => r.classList.add('vibrate'));
             document.getElementById('finalBtn').innerText = "TRANSMITTING...";
 
-            const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSekCGsgl7tlP5I7qIVXjdHJVVLVxSCumbCyVknDF_4chQHnHA/formResponse";
-            const formData = new URLSearchParams();
+            // 2. Prepare Form for Hidden Submit
+            const form = document.getElementById('assessmentForm');
             
-            formData.append('entry.576003086', document.getElementById('name').value);
-            formData.append('entry.1288588133', document.getElementById('email').value);
-            formData.append('entry.524784664', data.gender);
-            formData.append('entry.1286595765', document.getElementById('dob').value);
-            formData.append('entry.1093305608', document.getElementById('h').value);
-            formData.append('entry.674065485', document.getElementById('w').value);
-            formData.append('entry.795683662', document.getElementById('tw').value);
-            formData.append('entry.1226954780', document.getElementById('goal').value);
-            formData.append('entry.1690724005', document.getElementById('activity').value);
-            formData.append('entry.273803056', data.diet);
-            formData.append('entry.347206269', document.getElementById('health').value);
+            // Function to add hidden inputs for gender/diet (since they use div clicks)
+            const addHidden = (name, val) => {
+                let input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = val;
+                form.appendChild(input);
+            };
 
-            try {
-                await fetch(formURL, { method: 'POST', mode: 'no-cors', body: formData });
-                setTimeout(() => {
-                    document.getElementById('matrixScan').classList.remove('matrix-active');
-                    document.getElementById('consultPopup').style.display = 'block';
-                }, 2800);
-            } catch (e) {
-                location.reload(); 
-            }
+            addHidden('entry.524784664', data.gender);
+            addHidden('entry.273803056', data.diet);
+
+            // 3. Physical Submission to Hidden Iframe
+            form.submit();
+
+            // 4. Wait for Matrix scan animation then show success
+            setTimeout(() => {
+                document.getElementById('matrixScan').classList.remove('matrix-active');
+                document.getElementById('consultPopup').style.display = 'block';
+            }, 3000);
         }
     </script>
 </body>
