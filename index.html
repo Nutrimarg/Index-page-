@@ -267,6 +267,20 @@
 
         </div>
     </section>
+    <script>
+    function transitionToAssessment() {
+        // Create a full-page fade out effect
+        document.body.style.opacity = '0';
+        document.body.style.transform = 'scale(1.05)';
+        document.body.style.transition = 'all 0.6s ease-in-out';
+        document.body.style.filter = 'blur(10px)';
+
+        // After the animation, redirect to the assessment
+        setTimeout(() => {
+            window.location.href = "assesment.html";
+        }, 600);
+    }
+    </script>
 
     <footer>
         <p>&copy; 2026 Nutrimarg.fit | All Rights Reserved</p>
