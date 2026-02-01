@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Scan | Nutrimarg</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --r1-color: #d4e157; --r2-color: #8bc34a; --r3-color: #2e7d32;
+            --accent: #8bc34a; --dark: #0d1a10; --card-bg: rgba(10, 20, 15, 0.95);
+        }
+
+        body {
+            margin: 0; font-family: 'Segoe UI', sans-serif;
+            background: var(--dark); color: white; height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* --- BACKGROUND RINGS --- */
+        .ring-system {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center; z-index: -1;
+        }
+        .ring { position: absolute; border: 2px solid rgba(255,255,255,0.05); border-radius: 50%; transition: all 1.2s ease-in-out; }
+        .r1 { width: 320px; height: 320px; }
+        .r2 { width: 520px; height: 520px; }
+        .r3 { width: 720px; height: 720px; }
+
+        .glow-1 { border-color: var(--r1-color); box-shadow: 0 0 30px var(--r1-color); border-width: 4px; }
+        .glow-2 { border-color: var(--r2-color); box-shadow: 0 0 50px var(--r2-color); border-width: 4px; }
+        .glow-3 { border-color: var(--r3-color); box-shadow: 0 0 80px var(--r3-color); border-width: 4px; }
+
+        @keyframes vibrate { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        .vibrate { animation: vibrate 0.1s infinite; }
+
+        /* --- MATRIX OVERLAY --- */
+        .matrix-load {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 195, 74, 0.2), transparent);
+            transform: translateX(-100%); z-index: 5; pointer-events: none;
+        }
+        .matrix-active { animation: matrixMove 1.5s infinite; }
+        @keyframes matrixMove { 100% { transform: translateX(100%); } }
+
+        /* --- CARDS --- */
+        .survey-card {
+            background: var(--card-bg); backdrop-filter: blur(25px);
+            padding: 35px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            width: 90%; max-width: 420px; text-align: center; display: none; z-index: 10;
+        }
+        .active { display: block; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- THEMED DATE PICKER --- */
+        input[type="date"] {
+            appearance: none; -webkit-appearance: none;
+            background: rgba(255,255,255,0.08); border: 2px solid rgba(139, 195, 74, 0.3);
+            color: white; padding: 15px; border-radius: 12px; width: 100%;
+            font-size: 1rem; outline: none; margin: 15px 0; color-scheme: dark; /* Forces internal picker to dark */
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) sepia(1) saturate(5) hue-rotate(45deg); /* Turns it Green */
+            cursor: pointer; font-size: 1.2rem;
+        }
+
+        /* --- THEMED DROPDOWNS --- */
+        .input-box {
+            width: 100%; padding: 15px; margin: 12px 0; border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.1); background: #1a2a1d; /* Solid dark background */
+            color: white; font-size: 1rem; outline: none; cursor: pointer;
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238bc34a'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 15px center; background-size: 20px;
+        }
+        
+        /* This fixes the white background in the dropdown list */
+        select option { background-color: #1a2a1d; color: white; padding: 10px; }
+
+        .sel-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .sel-item { 
+            padding: 15px 5px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;
+        }
+        .sel-item.selected { background: var(--accent); color: var(--dark); font-weight: bold; border-color: white; box-shadow: 0 0 15px var(--accent); }
+
+        .btn-next {
+            background: var(--accent); color: var(--dark); border: none; padding: 18px;
+            border-radius: 50px; font-weight: 1000; width: 100%; cursor: pointer; margin-top: 20px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        #consultPopup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #0d1a10; border: 2px solid var(--accent); padding: 40px;
+            border-radius: 30px; z-index: 100; text-align: center; display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="matrix-load" id="matrixScan"></div>
+
+    <div class="ring-system">
+        <div class="ring r1" id="ring1"></div>
+        <div class="ring r2" id="ring2"></div>
+        <div class="ring r3" id="ring3"></div>
+    </div>
+
+    <div class="survey-card active" id="step1">
+        <h2 style="color: var(--r1-color); margin-bottom: 5px;">Bio-Identity</h2>
+        <p style="font-size: 0.8rem; opacity: 0.6; margin-bottom: 20px;">Establishing basic biomarkers</p>
+        <div class="sel-grid">
+            <div class="sel-item" onclick="pick('gender','Male',this)">Male</div>
+            <div class="sel-item" onclick="pick('gender','Female',this)">Female</div>
+            <div class="sel-item" onclick="pick('gender','Other',this)">Other</div>
+        </div>
+        <input type="date" id="dob">
+        <button class="btn-next" onclick="toStep(2, 1)">Initialize Scan</button>
+    </div>
+
+    <div class="survey-card" id="step2">
+        <h2 style="color: var(--r2-color);">Metabolic Goal</h2>
+        <select id="goal" class="input-box">
+            <option value="" disabled selected>Primary Goal</option>
+            <option value="Weight Loss">Weight Loss & Fat Burning</option>
+            <option value="Muscle Gain">Muscle Building & Strength</option>
+            <option value="Clinical">PCOS / Diabetes Management</option>
+            <option value="Maintenance">Healthy Maintenance</option>
+        </select>
+        <select id="activity" class="input-box">
+            <option value="" disabled selected>Activity Level</option>
+            <option value="Sedentary">Sedentary (No Exercise)</option>
+            <option value="Moderate">Moderate (3-5 days/week)</option>
+            <option value="Athlete">Extra Active (Professional)</option>
+        </select>
+        <button class="btn-next" onclick="toStep(3, 2)">Sync Lifestyle</button>
+    </div>
+
+    <div class="survey-card" id="step3">
+        <h2 style="color: var(--r3-color);">Body Metrics</h2>
+        <input type="number" id="h" class="input-box" placeholder="Height (cm)">
+        <input type="number" id="w" class="input-box" placeholder="Current Weight (kg)">
+        <input type="number" id="tw" class="input-box" placeholder="Target Weight (kg)">
+        <button class="btn-next" onclick="toStep(4, 3)">Lock Biometrics</button>
+    </div>
+
+    <div class="survey-card" id="step4">
+        <h2>Clinical Habits</h2>
+        <div class="sel-grid">
+            <div class="sel-item" onclick="pick('diet','Veg',this)">Veg</div>
+            <div class="sel-item" onclick="pick('diet','Non-Veg',this)">Non-Veg</div>
+            <div class="sel-item" onclick="pick('diet', 'Egg', this)">Egg</div>
+        </div>
+        <select id="health" class="input-box">
+            <option value="None">No Medical Issues</option>
+            <option value="PCOS">PCOS / PCOD</option>
+            <option value="Diabetes">Diabetes (Type 1/2)</option>
+            <option value="Thyroid">Thyroid Issues</option>
+            <option value="Hypertension">Hypertension (BP)</option>
+        </select>
+        <button class="btn-next" onclick="toStep(5, 0)">Analyze Habits</button>
+    </div>
+
+    <div class="survey-card" id="step5">
+        <h2 style="color:var(--accent)">Finalize Scan</h2>
+        <input type="text" id="name" class="input-box" placeholder="Full Name">
+        <input type="email" id="email" class="input-box" placeholder="Email Address">
+        <button class="btn-next" id="finalBtn" onclick="triggerMatrix()">Generate My Plan</button>
+    </div>
+
+    <div id="consultPopup">
+        <i class="fas fa-atom fa-spin" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
+        <h2>Bio-Scan Successful</h2>
+        <p style="opacity: 0.8; line-height: 1.5;">V D is now analyzing your clinical data to build your custom nutrition plan.</p>
+        
+        <button class="btn-next" onclick="window.location.href='https://wa.me/918978137746?text=Hi%20VD,%20I%20just%20finished%20my%20Bio-Scan!'">
+            <i class="fab fa-whatsapp"></i> Contact V D Directly
+        </button>
+
+        <div style="margin-top: 20px;">
+            <a href="index.html" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9rem; transition: 0.3s;" onmouseover="this.style.color='#8bc34a'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+                <i class="fas fa-arrow-left"></i> Return to Homepage
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let data = { gender: '', diet: '' };
+
+        function pick(key, val, el) {
+            data[key] = val;
+            el.parentElement.querySelectorAll('.sel-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function toStep(next, ringToGlow) {
+            if(ringToGlow > 0) document.getElementById('ring' + ringToGlow).classList.add('glow-' + ringToGlow);
+            document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('active'));
+            document.getElementById('step' + next).classList.add('active');
+        }
+
+        async function triggerMatrix() {
+            document.getElementById('matrixScan').classList.add('matrix-active');
+            document.querySelectorAll('.ring').forEach(r => r.classList.add('vibrate'));
+            document.getElementById('finalBtn').innerText = "TRANSMITTING...";
+
+            const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSekCGsgl7tlP5I7qIVXjdHJVVLVxSCumbCyVknDF_4chQHnHA/formResponse";
+            const formData = new URLSearchParams();
+            
+            formData.append('entry.576003086', document.getElementById('name').value);
+            formData.append('entry.1288588133', document.getElementById('email').value);
+            formData.append('entry.524784664', data.gender);
+            formData.append('entry.1286595765', document.getElementById('dob').value);
+            formData.append('entry.1093305608', document.getElementById('h').value);
+            formData.append('entry.674065485', document.getElementById('w').value);
+            formData.append('entry.795683662', document.getElementById('tw').value);
+            formData.append('entry.1226954780', document.getElementById('goal').value);
+            formData.append('entry.1690724005', document.getElementById('activity').value);
+            formData.append('entry.273803056', data.diet);
+            formData.append('entry.347206269', document.getElementById('health').value);
+
+            try {
+                await fetch(formURL, { method: 'POST', mode: 'no-cors', body: formData });
+                setTimeout(() => {
+                    document.getElementById('matrixScan').classList.remove('matrix-active');
+                    document.getElementById('consultPopup').style.display = 'block';
+                }, 2800);
+            } catch (e) {
+                location.reload(); 
+            }
+        }
+    </script>
+</body>
+</html>
